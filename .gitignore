@@ -1,3 +1,10 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
 # Compiled class file
 *.class
 
@@ -27,6 +34,9 @@ hs_err_pid*
 *.iws
 *.iml
 *.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
 ### NetBeans ###
 /nbproject/private/
@@ -34,7 +44,21 @@ hs_err_pid*
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
 
 ### VS Code ###
 .vscode/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### MacOS ###
+.DS_Store
