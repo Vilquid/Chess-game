@@ -33,6 +33,8 @@ public class FriendRequestController
 	private FriendRequestRepository friendRequests;
 
 	@GetMapping("/send")
+	public String sendFriendRequest(@AuthenticationPrincipal User currentUser, Model model)
+	{
 		List<User> userLists = users.findAll();
 		// friends list
 		List<FriendRequest> friends = friendRequests.findAllByReceiverAndIsAccepted(currentUser, true);
