@@ -1,12 +1,23 @@
 package cin3.chess.controller;
 
+import cin3.chess.domain.FriendRequest;
+import cin3.chess.form.FriendRequestForm;
+import cin3.chess.repository.FriendRequestRepository;
+import cin3.chess.repository.UserRepository;
+import cin3.chess.services.FriendRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/friends")
@@ -22,7 +33,6 @@ public class FriendRequestController
 	private FriendRequestRepository friendRequests;
 
 	@GetMapping("/send")
-	public String sendFriendRequest(@AuthenticationPrincipal User currentUser, Model model) {
 		List<User> userLists = users.findAll();
 		// friends list
 		List<FriendRequest> friends = friendRequests.findAllByReceiverAndIsAccepted(currentUser, true);
