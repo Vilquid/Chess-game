@@ -66,7 +66,8 @@ public class GameRequestController
 	}
 
 	@GetMapping("/cancel")
-	public String cancelGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
+	@Transactional
+	public String cancelGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId) // pas encore utilisée
 	{
 		Optional<User> sender = users.findById(friendId);
 
@@ -84,7 +85,7 @@ public class GameRequestController
 
 	@GetMapping("/delete")
 	@Transactional
-	public String deleteGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
+	public String deleteGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId) // pas encore utilisée
 	{
 		Optional<User> sender = users.findById(friendId);
 
