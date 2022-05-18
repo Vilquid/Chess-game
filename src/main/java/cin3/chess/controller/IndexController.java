@@ -62,4 +62,14 @@ public class IndexController()
 		model.addAttribute("games", currentGames);
 		return "index";
 	}
+
+//	@GetMapping("/logout")
+//	public String logout(@AuthenticationPrincipal User user, final Model model) // pas utilisée
+//	{
+//		User u = users.findByUsername(user.getUsername());
+//		u.setPlaying(false);
+//		u.setLogIn(false);
+//		users.save(u);
+//		return "redirect:/";
+//	}
 }
