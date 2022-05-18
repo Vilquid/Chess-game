@@ -14,5 +14,28 @@ import java.util.Optional;
 
 public class GameRequestController
 {
+	@Autowired
+	private UserRepository users;
 
+	@Autowired
+	private GameRequestRepository requests;
+
+	@GetMapping("/send")
+	public String sendFriendRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
+	{
+		Optional<User> friend = users.findById(friendId);
+		if (friend.isPresent())
+		{
+			GameRequest req = new GameRequest();
+			req.setAccepted(false);
+			req.setSender(currentUser);
+			req.setReceiver(friend.get());
+
+			requests.save(req);
+		}
+
+		return "redirect:/";
+	}
+
+	
 }
