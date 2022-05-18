@@ -55,4 +55,48 @@ public class GameRequestController
 		return "redirect:/game/init/" + friendId + "/" + currentUser.getId();
 	}
 
+	@GetMapping("/decline")
+	@Transactional
+	public String decline(@RequestParam Long senderId)
+	{
+		Optional<User> sender = users.findById(senderId);
+		sender.ifPresent(user -> requests.deleteBySenderAndIsAccepted(user, false));
+
+		return "redirect:/";
+	}
+
+	@GetMapping("/cancel")
+	public String cancelGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
+	{
+		Optional<User> sender = users.findById(friendId);
+
+		if (sender.isPresent())
+		{
+			Optional<GameRequest> req = requests.findBySenderAndReceiverAndIsAccepted(sender.get(), currentUser, false);
+			if (req.isPresent())
+			{
+				requests.delete(req.get());
+			}
+		}
+
+		return "redirect:/";
+	}
+
+	@GetMapping("/delete")
+	@Transactional
+	public String deleteGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
+	{
+		Optional<User> sender = users.findById(friendId);
+
+		if (sender.isPresent())
+		{
+			Optional<GameRequest> req = requests.findBySenderAndReceiverAndIsAccepted(sender.get(), currentUser, true);
+			if (req.isPresent())
+			{
+				requests.delete(req.get());
+			}
+		}
+
+		return "redirect:/";
+	}
 }
