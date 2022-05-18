@@ -37,5 +37,22 @@ public class GameRequestController
 		return "redirect:/";
 	}
 
-	
+	@GetMapping("/accept")
+	public String acceptGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
+	{
+		Optional<User> sender = users.findById(friendId);
+
+		if (sender.isPresent())
+		{
+			Optional<GameRequest> req = requests.findBySenderAndReceiverAndIsAccepted(sender.get(), currentUser, false);
+			if (req.isPresent())
+			{
+				req.get().setAccepted(true);
+				requests.save(req.get());
+			}
+		}
+
+		return "redirect:/game/init/" + friendId + "/" + currentUser.getId();
+	}
+
 }
