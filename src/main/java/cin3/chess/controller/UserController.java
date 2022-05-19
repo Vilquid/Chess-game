@@ -23,5 +23,10 @@ public class UserController
 	@Autowired
 	private DbUserDetailsService userService;
 
-	
+	@GetMapping("/login")
+	public String login()
+	{
+		return "user/login";
+	}
+
 }
