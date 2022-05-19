@@ -29,4 +29,25 @@ public class UserController
 		return "user/login";
 	}
 
+	@GetMapping("/register")
+	public String register(Model model)
+	{
+		model.addAttribute("user", userService.createForm(null));
+		return "user/register";
+	}
+
+	@PostMapping("/register")
+	public String addUser(@Valid @ModelAttribute("user") UserForm form, BindingResult result, Model model)
+	{
+		if (result.hasErrors())
+		{
+			model.addAttribute("user", form);
+			return "user/register";
+		}
+
+		userService.save(form);
+		logger.info("successfully created user, need to register it in database");
+
+		return "redirect:/login";
+	}
 }
