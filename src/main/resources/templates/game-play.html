@@ -1,0 +1,110 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:fragment="title">Chess v1.0</title>
+</head>
+<body>
+<!--/* Game page to play chess */-->
+<div th:fragment="content" th:id="'game'+${game.getId()}">
+    <h1 class="text-center">You are <span th:text="${user.getUsername()}"></span></h1>
+    <h6 class="text-danger text-center">Refresh the page to update the other player moves</h6>
+    <div class="container-fluid">
+        <button th:if="${!mate}" type="button" class="btn btn-dark" id="leave" th:attr="data-id=${user.getUsername()}" data-toggle="modal" data-target="#LeaveGame">Give up
+        </button>
+        <a th:if="${mate}" href="#" class="btn btn-success mt-3 mb-3" th:href="@{/}">Go back to my profile</a>
+        <h2>Game <span th:text="${game.getId()}"></span></h2>
+        <ul>
+            <li><span th:text="${game.getBlackPlayer().getUsername()}" id="Player1" th:classappend="${game.getBlackPlayer().getPlaying() == true ? 'text-success' : 'text-danger'}">Player 1</span> is
+                <span class="bold">Black</span>
+                (<span th:text="${game.getNumberOfPlay(1)}">0</span> moves)
+            </li>
+            <li><span th:text="${game.getWhitePlayer().getUsername()}" id="Player2" th:classappend="${game.getWhitePlayer().getPlaying() == true ? 'text-success' : 'text-danger'}">Player 2</span> is
+                <span class="bold">White</span>
+                (<span th:text="${game.getNumberOfPlay(0)}">0</span> moves)
+            </li>
+            <li>Total elapsed time : <span id="time" th:text="${time}">1</span> s</li>
+            <li>Move of <span th:text="${game.getCurrentUser().getUsername()}"></span> elapsed time : <span id="time_move" th:text="${time_move}">1</span> s</li>
+            <li>Game status :
+                <span id="game_status" th:text="${(game.getPause() or game.getFinish()) ? 'on break' : 'in progress'}" th:classappend="${(game.getPause() or game.getFinish()) ? 'text-danger' : 'text-success'}"></span>
+            </li>
+        </ul>
+        <h4 class="Timer"></h4>
+        <h4 th:if="${!mate}">
+            <span th:text="${game.getCurrentPlayer() == 1 ? game.getBlackPlayer().getUsername() : game.getWhitePlayer().getUsername()}">Bilel</span> player
+            <span th:text="${user_index == game.getCurrentPlayer()} ? 'your turn' : 'is playing'">is playing</span> !
+        </h4>
+        <span id="player-turn" th:text="${game.getCurrentPlayer() == 1 ? 'Black' : 'White'}" style="display: none;">Black</span>
+        <h5 th:text="${error_msg}" class="alert-message">A message appear !</h5>
+    </div>
+    <h3 th:if="${game.getEchec() == 1 && !(mate)}" class="text-center text-danger">CHECK</h3>
+    <h3 th:if="${mate}" class="text-center" id="mate">CHECKMATE</h3>
+    <h2 th:if="${gameList}" class="text-center" id="winner">Winner is <span th:text="${gameList.getWinner()}" >Player 1</span></h2>
+    <div class="flex-container">
+        <table id="board">
+            <tr th:if="${game.getWhitePlayer().getUsername() == user.getUsername()}" th:each="y: ${#numbers.sequence(0, game.WIDTH - 1)}" class="line">
+                <td th:each="x: ${#numbers.sequence(0, game.WIDTH - 1)}" class="cell ui-droppable"
+                    th:classappend="|${(x % 2 == y % 2) ? 'odd' : 'even' } ${(game.getFigureAt(x, y) != null) ? 'disabled' : ''} |"
+                    th:attr="data-x=${x}, data-y=${y}">
+                    <div th:if="${game.getFigureAt(x, y) != null}" th:utext="${game.getFigureAt(x, y).getHtmlCode()}"
+                         th:attr="data-id=${game.getFigureAt(x, y).getId()}" class="figure ui-draggable"
+                         th:classappend="|${(game.getFigureAt(x,y).getOwner() == 0) ? 'white' : 'black' }|"
+                         style="position: relative;">♜
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${game.getBlackPlayer().getUsername() == user.getUsername()}" th:each="y: ${#numbers.sequence(game.WIDTH - 1, 0, -1)}" class="line">
+                <td th:each="x: ${#numbers.sequence(0, game.WIDTH - 1)}" class="cell ui-droppable"
+                    th:classappend="|${(x % 2 == y % 2) ? 'even' : 'odd' } ${(game.getFigureAt(x, y) != null) ? 'disabled' : ''} |"
+                    th:attr="data-x=${x}, data-y=${y}">
+                    <div th:if="${game.getFigureAt(x, y) != null}" th:utext="${game.getFigureAt(x, y).getHtmlCode()}"
+                         th:attr="data-id=${game.getFigureAt(x, y).getId()}" class="figure ui-draggable"
+                         th:classappend="|${(game.getFigureAt(x,y).getOwner() == 0) ? 'white' : 'black' }|"
+                         style="position: relative;">♜
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- List of moves -->
+    <div class="container-fluid mt-5">
+        <h3 class="mb-4">Liste of moves</h3>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Player</th>
+                    <th scope="col">Start</th>
+                    <th scope="col">End</th>
+                    <th scope="col">Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="move: ${game.getMoves()}">
+                    <th scope="row" th:text="${move.getPlayer() == 1 ? 'Black' : 'White'}">1</th>
+                    <td th:text="${move.getPositionStart()}">E4</td>
+                    <td th:text="${move.getPositionEnd()}">B6</td>
+                    <td><span th:text="${move.getTime()}">3</span> s</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Leave modal -->
+    <div class="modal fade" id="LeaveGame" tabindex="-1" role="dialog" aria-labelledby="LeaveTheGame"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leave the game</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure ?</p>
+                    <a class="btn btn-danger text-white" onclick="leaveGame();">Yes</a>
+                    <a class="btn btn-secondary text-white" data-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

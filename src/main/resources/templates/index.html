@@ -1,0 +1,173 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:fragment="title">Chess v1.0</title>
+</head>
+<body>
+<!--/* Main page (index) */-->
+<div th:fragment="content">
+    <h1 class="text-center m-3">My Profile</h1>
+    <div sec:authorize="isAuthenticated()" class="container-fluid">
+        <h2 class="mt-4 mb-4">About me</h2>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 th:text="${user.getUsername()}" class="card-title"></h5>
+                <h6 th:text="${user.getEmail()}" class="card-subtitle mb-2 text-muted">moumou.rad@gmail.com</h6>
+                <h6 th:text="Player" class="card-subtitle mb-2 text-muted">Player</h6>
+                <a th:href="@{/logout}" href="#" class="card-link">Log out</a>
+            </div>
+        </div>
+        <h2 class="mt-4 mb-4">Current games</h2>
+        <table class="table" th:if="${!games.isEmpty()}">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">White player</th>
+                <th scope="col">Black player</th>
+                <th class="col">Join</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="game: ${games}" th:if="${!game.getFinish()}">
+                    <td th:text="${game.getId()}" scope="row">1</td>
+                    <td th:text="${game.getWhitePlayer().getUsername()}">Mark</td>
+                    <td th:text="${game.getBlackPlayer().getUsername()}">Otto</td>
+                    <td>
+                        <a class="btn btn-success" href="#" th:href="|@{/game/play/}${game.getId()}|">
+                            <span class="oi oi-media-play" title="accept" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div th:if="${games.isEmpty()}">No game started !</div>
+        <div class="row">
+            <div class="col-sm">
+                <h2 class="mt-4 mb-4">My Friends</h2>
+                <ul th:if="${!friends.isEmpty()}" class="list-group">
+                    <li class="list-group-item">
+                        <div th:each="friend: ${friends}" class="row">
+                            <div class="col-sm font-weight-bold text-uppercase text-center m-1">
+                                <span th:text="${friend.getUsername()}" th:classappend="${friend.getLogIn() == true ? 'text-success' : 'text-danger'}">Bilel</span>
+                                (<span th:text="${friend.getPlaying() == true ? 'playing' : 'not playing'}" th:classappend="${friend.getPlaying() == true ? 'text-danger' : 'text-success'}">not playing</span>)
+                            </div>
+                            <div class="col-sm text-center m-1">
+                                <form method="get" th:action="@{/game/request/send}">
+                                    <input type="hidden" th:name="friendId" th:value="${friend.getId()}">
+                                    <button class="btn btn-primary" type="submit">
+                                        <span class="oi oi-media-play" title="send game request" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-sm m-1 text-center">
+                                <form method="get" th:action="@{/friends/delete}">
+                                    <input type="hidden" th:name="userId" th:value="${user.getId()}">
+                                    <input type="hidden" th:name="username" th:value="${friend.getUsername()}">
+                                    <button class="btn btn-danger" type="submit">
+                                        <span class="oi oi-delete" title="delete" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div th:if="${friends.isEmpty() && friend_requests.isEmpty()}">Start searching friends to create a game !</div>
+                <div th:if="${friends.isEmpty() && !friend_requests.isEmpty()}">You can accept pending friend requests to start a game</div>
+            </div>
+            <div class="col-sm">
+                <h2 class="mt-4 mb-4">My Friends request</h2>
+                <ul th:if="${!friend_requests.isEmpty()}" class="list-group">
+                    <li class="list-group-item">
+                        <div th:each="req: ${friend_requests}" class="row">
+                            <div class="col-sm font-weight-bold text-uppercase text-center m-1">
+                                <span th:text="${req.getSender()}">Bilel</span>
+                            </div>
+                            <div class="col-sm text-center m-2">
+                                <form method="get" th:action="@{/friends/accept}">
+                                    <input type="hidden" th:name="userId" th:value="${user.getId()}">
+                                    <input type="hidden" th:name="username" th:value="${req.getSender()}">
+                                    <button class="btn btn-success" type="submit">
+                                        <span class="oi oi-check" title="accept" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-sm m-1" style="text-align: end;">
+                                <form method="get" th:action="@{/friends/decline}">
+                                    <input type="hidden" th:name="userId" th:value="${user.getId()}">
+                                    <input type="hidden" th:name="username" th:value="${req.getSender()}">
+                                    <button class="btn btn-danger" type="submit">
+                                        <span class="oi oi-delete" title="decline" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div th:if="${friend_requests.isEmpty()}">No pending request for now</div>
+            </div>
+        </div>
+        <h2 class="mt-4 mb-4">Sent game requests</h2>
+        <div th:if="${!pending_game_requests.isEmpty()}" class="col-sm">
+            <ul class="list-group">
+                <li th:each="preq: ${pending_game_requests}" class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm font-weight-bold text-uppercase text-center m-1">
+                            <span th:text="${preq.getReceiver().getUsername()}" th:classappend="${preq.getReceiver().getLogIn() == true ? 'text-success' : 'text-danger'}">Bilel</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${pending_game_requests.isEmpty()}">Start sending a request to a friend and wait for a response.</div>
+        <h2 class="mt-4 mb-4">My game requests</h2>
+        <div th:if="${!game_requests.isEmpty()}" class="col-sm">
+            <ul class="list-group">
+                <li th:each="greq: ${game_requests}" class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm font-weight-bold text-uppercase text-center m-1" th:classappend="${greq.getSender().getLogIn() == true ? 'text-success' : 'text-danger'}">
+                            <span th:text="${greq.getSender().getUsername()}">Bilel</span>
+                        </div>
+                        <div class="col-sm text-center m-1">
+                            <form method="get" th:action="@{game/request/accept}">
+                                <input type="hidden" th:name="friendId" th:value="${greq.getSender().getId()}">
+                                <button class="btn btn-success" type="submit">
+                                    <span class="oi oi-media-play" title="accept" aria-hidden="true"></span>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-sm m-1 text-center">
+                            <form method="get" th:action="@{/game/request/decline}">
+                                <button class="btn btn-danger" type="submit">
+                                    <input type="hidden" th:name="senderId" th:value="${greq.getSender().getId()}">
+                                    <span class="oi oi-delete" title="decline" aria-hidden="true"></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div th:if="${game_requests.isEmpty()}">No game request for the moment. Ask to your friend to play using the <span class="text-primary">play button</span> next to his or her username.</div>
+        <h2 class="mt-4 mb-4">My 10 last game</h2>
+        <table th:if="${!last_games.isEmpty()}" class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Winner</th>
+                <th scope="col">Looser</th>
+                <th scope="col">Time</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="lg, custStat : ${last_games}" th:if="${custStat.count < 11}">
+                    <th scope="row" th:text="${custStat.count}">1</th>
+                    <td th:text="${lg.getUserWinner().getUsername()}" th:classappend="${lg.getUserWinner().getUsername() == user.getUsername() ? 'text-success' : ''}">Mark</td>
+                    <td th:text="${lg.getUserLooser().getUsername()}" th:classappend="${lg.getUserLooser().getUsername() == user.getUsername() ? 'text-danger' : ''}">Otto</td>
+                    <td th:text="|${lg.getTimeElapsed(lg.getGameTime())} s|"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div th:if="${last_games.isEmpty()}">You didn't played any game !</div>
+    </div>
+</div>
+</body>

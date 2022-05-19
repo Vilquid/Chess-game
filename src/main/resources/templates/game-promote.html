@@ -1,0 +1,121 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:fragment="title">Chess v1.0</title>
+</head>
+<body>
+<!--/* Game page to play chess */-->
+<div th:fragment="content" th:id="'game'+${game.getId()}">
+    <h1 class="text-center">Welcome to Chess</h1>
+    <div class="container-fluid">
+        <button type="button" class="btn btn-dark" id="leave" data-toggle="modal" data-target="#LeaveGame">Leave
+        </button>
+        <h2>Game <span th:text="${game.getId()}"></span></h2>
+        <ul>
+            <li><span id="Player1">Player 1</span> is
+                <span class="bold">Black</span>
+                (<span th:text="${game.getNumberOfPlay(1)}">0</span> moves)
+            </li>
+            <li><span id="Player2">Player 2</span> is
+                <span class="bold">White</span>
+                (<span th:text="${game.getNumberOfPlay(0)}">0</span> moves)
+            </li>
+            <li>Total elapsed time : <span id="time" th:text="${time}">1</span> s</li>
+            <li>Move elapsed time : <span id="time_move" th:text="${time_move}">1</span> s</li>
+        </ul>
+        <h4 class="Timer"></h4>
+        <h4><span id="player-turn" th:text="${game.getCurrentPlayer() == 1 ? 'Black' : 'White'}">Black</span> player your turn !</h4>
+        <h5 th:text="${error_msg}" class="alert-message">A message appear !</h5>
+    </div>
+    <h3 th:if="${game.getEchec() == 1 && !(mate)}" class="text-center">Échecs au Roi</h3>
+    <h3 th:if="${mate}" class="text-center" id="mate">ECHEC ET MATE</h3>
+    <h2 th:if="${gameList}" class="text-center" id="winner">Winner is <span th:text="${gameList.getWinner()}" >Player 1</span></h2>
+    <div class="flex-container">
+        <table id="board">
+            <tr th:each="y: ${#numbers.sequence(0, game.WIDTH - 1)}" class="line">
+                <td th:each="x: ${#numbers.sequence(0, game.WIDTH - 1)}" class="cell ui-droppable"
+                    th:classappend="|${(x % 2 == y % 2) ? 'odd' : 'even' } ${(game.getFigureAt(x, y) != null) ? 'disabled' : ''} |"
+                    th:attr="data-x=${x}, data-y=${y}">
+                    <div th:if="${game.getFigureAt(x, y) != null}" th:utext="${game.getFigureAt(x, y).getHtmlCode()}"
+                         th:attr="data-id=${game.getFigureAt(x, y).getId()}" class="figure ui-draggable"
+                         th:classappend="|${(game.getFigureAt(x,y).getOwner() == 0) ? 'white' : 'black' }|"
+                         style="position: relative;">♜
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- List of moves -->
+    <div class="container-fluid mt-5">
+        <h3 class="mb-4">Liste of moves</h3>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Player</th>
+                <th scope="col">Start</th>
+                <th scope="col">End</th>
+                <th scope="col">Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="move: ${game.getMoves()}">
+                <th scope="row" th:text="${move.getPlayer() == 1 ? 'Black' : 'White'}">1</th>
+                <td th:text="${move.getPositionStart()}">E4</td>
+                <td th:text="${move.getPositionEnd()}">B6</td>
+                <td><span th:text="${move.getTime()}">3</span> s</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--/* Promotion modal */-->
+    <div class="modal" id="promotionModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Promote your pawn by upgrating it from the pieces below</h4>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container-fluid text-center">
+                        <form action="#" th:action="@{/game/promote}" th:object="${figure}" method="post">
+                            <input type="hidden" th:field="*{id}" />
+                            <div class="form-group">
+                                <label for="name">Choose your piece</label>
+                                <select name="name" id="name" class="form-control" th:field="*{name}">
+                                    <option th:value="queen" th:text="queen"></option>
+                                    <option th:value="bishop" th:text="bishop"></option>
+                                    <option th:value="rook" th:text="rook"></option>
+                                    <option th:value="knight" th:text="knight"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Promote</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Leave modal -->
+    <div class="modal fade" id="LeaveGame" tabindex="-1" role="dialog" aria-labelledby="LeaveTheGame"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leave the game</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure ?</p>
+                    <a class="btn btn-danger text-white" onclick="leaveGame();">Yes</a>
+                    <a class="btn btn-secondary text-white" data-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+

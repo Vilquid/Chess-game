@@ -1,0 +1,28 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:fragment="title">Send a friend request</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <h2 class="text-center m-4">Search your friend's username</h2>
+        <form th:action="@{/friends/send}" method="post" th:object="${request}">
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{sender}" />
+            <div th:if="${!users.isEmpty()}" class="form-group">
+                <label for="name">Select his or her username</label>
+                <select  name="name" th:field="*{username}" id="name" class="form-control">
+                    <option th:each="user: ${users}" th:value="${user.getUsername()}" th:text="${user.getUsername()}"></option>
+                </select>
+            </div>
+            <div class="font-weight-bold text-center mb-5 mt-5" th:if="${users.isEmpty()}">No new player to add, come back later !</div>
+            <div th:if="${!users.isEmpty()}" class="form-group">
+                <button class="btn btn-lg btn-dark btn-block" type="submit">Send request</button>
+            </div>
+            <div th:if="${users.isEmpty()}" class="form-group">
+                <a th:href="@{/}" href="#" class="btn btn-lg btn-dark btn-block">Go back to my profile</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>

@@ -1,0 +1,37 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title th:fragment="title">Log in to your account</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container-fluid">
+        <h2 class="text-center m-4">Log in</h2>
+        <form th:action="@{/login}" method="post">
+            <div th:if="${param.error}" class="alert alert-danger">
+                invalid username and/or password
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success">
+                Vous avez été déconnecté
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input name="email" id="email" type="email" class="form-control" placeholder="Email" autocomplete="off" required/>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input name="password" id="password" type="password" class="form-control" placeholder="Password" required/>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-dark btn-block" type="submit">Sign in</button>
+            </div>
+            <div class="form-group-inline">
+                <div class="row">
+                    <div class="text-center col"><a th:href="@{/register}">don't have any account</a></div>
+                    <div class="text-center col"><a href="#">Forgot password</a></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
