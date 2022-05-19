@@ -1,9 +1,12 @@
 package cin3.chess.config;
 
+import cin3.chess.domain.Authority;
+import cin3.chess.domain.User;
+import cin3.chess.repository.AuthorityRepository;
+import cin3.chess.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

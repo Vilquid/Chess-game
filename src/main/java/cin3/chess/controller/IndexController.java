@@ -4,15 +4,16 @@ import cin3.chess.domain.Game;
 import cin3.chess.domain.User;
 import cin3.chess.repository.*;
 import cin3.chess.services.FriendRequestService;
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
-public class IndexController()
+public class IndexController
 {
 	@Autowired
 	private FriendRequestRepository friendRequests;

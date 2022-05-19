@@ -7,7 +7,6 @@ import cin3.chess.services.ChessGameService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,20 +45,19 @@ public class GameController
 	@Autowired
 	private MoveRepository moves;
 
-	@Autowired
+//	@Autowired
 	private FigureRepository figures;
 
 	@Autowired
 	private UserRepository users;
 
-	private Logger logger = LoggerFactory.getLogger(GameController.class);
+//	private Logger logger = LoggerFactory.getLogger(GameController.class);
+	private Logger logger = (Logger) LoggerFactory.getLogger(GameController.class);
 
 	@GetMapping("/init/{whiteUserId}/{blackUserId}")
-	public String init(
-			@PathVariable Long whiteUserId,
-			@PathVariable Long blackUserId
-	) {
-		Optional<User> white = users.findById(whiteUserId);
+	public String init(@PathVariable Long whiteUserId, @PathVariable Long blackUserId)
+	{
+		Optional<cin3.chess.domain.User> white = users.findById(whiteUserId);
 		Optional<User> black = users.findById(blackUserId);
 
 		if (white.isPresent() && black.isPresent()) {
@@ -107,11 +105,8 @@ public class GameController
 	}
 
 	@GetMapping("/play/{id}")
-	public String play(
-			final Model model,
-			@PathVariable final Long id,
-			@AuthenticationPrincipal User currentUser
-	) {
+	public String play(final Model model, @PathVariable final Long id, @AuthenticationPrincipal User currentUser)
+	{
 		Optional<Game> game = games.findById(id);
 		if (game.isPresent()) {
 			if (game.get().getWhitePlayer().getPlaying() && game.get().getBlackPlayer().getPlaying()) {
@@ -142,17 +137,18 @@ public class GameController
 
 			return "game-play";
 		}
-		logger.info("game {} not found for route /play/{}", id, id);
+
+		logger.info("game " + id + " not found for route /play/" + id);
+
 		return INDEX_REDIRECTION;
 	}
 
 	@GetMapping("/promote/{gameId}/{promoteId}")
-	public String promote(final Model model,
-						  @PathVariable final Long gameId,
-						  @PathVariable final Long promoteId
-	) {
+	public String promote(final Model model, @PathVariable final Long gameId, @PathVariable final Long promoteId)
+	{
 		Optional<Game> game = games.findById(gameId);
-		if (game.isPresent()) {
+		if (game.isPresent())
+		{
 			Optional<Figure> fig = figures.findById(promoteId);
 			if (fig.isPresent()) {
 				model.addAttribute("game", game.get());
@@ -163,7 +159,7 @@ public class GameController
 				return "game-promote";
 			}
 		}
-		logger.info("game {} not found for route /promote/{}/{}", gameId, gameId, promoteId);
+		logger.info("game " + gameId + " not found for route /promote/" + gameId + "/" + promoteId);
 		return INDEX_REDIRECTION;
 	}
 
@@ -173,12 +169,14 @@ public class GameController
 			logger.info("error promote form");
 		}
 
-		logger.info("you decided to promote {} to a {}", form.getId(), form.getName());
+		logger.info("you decided to promote " + form.getId() + " to a " +  form.getName());
 
 		Optional<Figure> figure = figures.findById(form.getId());
 
-		if (figure.isPresent()) {
-			if (Game.FIGURES_PROMOTION.contains(form.getName())) {
+		if (figure.isPresent())
+		{
+			if (Game.FIGURES_PROMOTION.contains(form.getName()))
+			{
 				figure.get().setName(form.getName());
 				figure.get().setCode(FigureName.stringToFigureName(form.getName()).ordinal());
 				figures.save(figure.get());
@@ -192,23 +190,25 @@ public class GameController
 
 
 	@GetMapping("/endgame/{gameId}/{winner}/{looser}")
-	public String EndGame(@PathVariable final Long gameId,
-						  @PathVariable final String winner,
-						  @PathVariable final String looser
-	) {
+	public String EndGame(@PathVariable final Long gameId, @PathVariable final String winner, @PathVariable final String looser)
+	{
 		Optional<Game> game = games.findById(gameId);
-		if (game.isPresent()) {
+		if (game.isPresent())
+		{
 			game.get().setFinish(true);
 			game.get().setPause(true);
-			if (game.get().getBlackPlayer().getUsername().equals(winner)) {
+			if (game.get().getBlackPlayer().getUsername().equals(winner))
+			{
 				game.get().setWinner(PlayerName.BLACK);
-			} else if (game.get().getWhitePlayer().getUsername().equals(winner)) {
+			} else if (game.get().getWhitePlayer().getUsername().equals(winner))
+			{
 				game.get().setWinner(PlayerName.WHITE);
 			}
 			games.save(game.get());
 		}
 
-		if (gamesList.findByGameId(gameId) == null) {
+		if (gamesList.findByGameId(gameId) == null)
+		{
 			GameList gameList = new GameList();
 			gameList.setWinner(winner);
 			gameList.setLooser(looser);
@@ -227,18 +227,23 @@ public class GameController
 			@PathVariable final Integer x,
 			@PathVariable final Integer y,
 			@AuthenticationPrincipal User currentUser
-	) {
+	)
+	{
 		Optional<Game> game = games.findById(gameId);
-		if (game.isPresent()) {
+		if (game.isPresent())
+		{
 			// change the coordinate of the moved pawn to the new position
 			Figure f = figures.getOne(pawnId);
-			if (f.getOwner() == game.get().getCurrentPlayer() && game.get().getCurrentUser().getUsername().equals(currentUser.getUsername())) {
+			if (f.getOwner() == game.get().getCurrentPlayer() && game.get().getCurrentUser().getUsername().equals(currentUser.getUsername()))
+			{
 
 				int dy = Arrays.asList(-1, 1).get(f.getOwner());
 				// y offset
 				int py = f.getY() + dy;
-				if (Math.abs(x - f.getX()) == 1 && y == py) { // the move is in diagonal
-					if (gameService.checkEnPassant(game.get(), f, x, y)) {
+				if (Math.abs(x - f.getX()) == 1 && y == py)
+				{ // the move is in diagonal
+					if (gameService.checkEnPassant(game.get(), f, x, y))
+					{
 						Figure f2 = figures.getOne((game.get().getCurrentPlayer() == 0 ? game.get().getFigureAt(x, y + 1).getId() : game.get().getFigureAt(x, y - 1).getId()));
 						figures.delete(f2);
 						Move m = new Move();
@@ -272,21 +277,19 @@ public class GameController
 	}
 
 	@GetMapping("/move/{gameId}/{pawnId}/{x}/{y}")
-	public String moveOnVoidCell(final Model model,
-								 @PathVariable final Long gameId,
-								 @PathVariable final Long pawnId,
-								 @PathVariable final Integer x,
-								 @PathVariable final Integer y,
-								 @AuthenticationPrincipal User currentUser
-	) {
+	public String moveOnVoidCell(final Model model, @PathVariable final Long gameId, @PathVariable final Long pawnId, @PathVariable final Integer x, @PathVariable final Integer y, @AuthenticationPrincipal User currentUser)
+	{
 		Optional<Game> game = games.findById(gameId);
-		if (game.isPresent()) {
+		if (game.isPresent())
+		{
 			// change the coordinate of the moved pawn to the new position
 			Figure f = figures.getOne(pawnId);
 			// the player is able to move is own pawns only
-			if (f.getOwner() == game.get().getCurrentPlayer() && game.get().getCurrentUser().getUsername().equals(currentUser.getUsername())) {
+			if (f.getOwner() == game.get().getCurrentPlayer() && game.get().getCurrentUser().getUsername().equals(currentUser.getUsername()))
+			{
 				// check the movement
-				if (gameService.checkAny(game.get(), f, x, y)) {
+				if (gameService.checkAny(game.get(), f, x, y))
+				{
 					Move m = new Move();
 					m.setPositionStart(f.getMoveCode());
 
@@ -313,13 +316,16 @@ public class GameController
 					games.save(g);
 
 					// pawn promotion
-					if (gameService.enablePromotePawn(f)) {
+					if (gameService.enablePromotePawn(f))
+					{
 						return "redirect:/game/promote/" + game.get().getId() + "/" + f.getId();
 					}
-				} else if (f.getName().equals("pawn")) {
+				} else if (f.getName().equals("pawn"))
+				{
 					return "redirect:/game/passant/" + game.get().getId() + "/" + f.getId() + "/" + x + "/" + y;
 				}
-			} else {
+			} else
+			{
 				//TODO throw exception and inform the view
 				logger.info("You can't move a pawn that doesn't belong to you !");
 			}
@@ -327,17 +333,13 @@ public class GameController
 			model.addAttribute("game", game.get());
 			return GAME_REDIRECTION + game.get().getId();
 		}
-		logger.info("game {} not found for route /move/{}/...", gameId, gameId);
+		logger.info("game " + gameId + " not found for route /move/" + gameId + "/...");
 		return INDEX_REDIRECTION;
 	}
 
 	@GetMapping("/move/{gameId}/{pawnId1}/{pawnId2}")
-	public String moveOnAnyPawn(final Model model,
-								@PathVariable final Long gameId,
-								@PathVariable final Long pawnId1,
-								@PathVariable final Long pawnId2,
-								@AuthenticationPrincipal User currentUser
-	) {
+	public String moveOnAnyPawn(final Model model, @PathVariable final Long gameId, @PathVariable final Long pawnId1, @PathVariable final Long pawnId2, @AuthenticationPrincipal User currentUser)
+	{
 		Optional<Game> game = games.findById(gameId);
 		if (game.isPresent()) {
 			// change the coordinate of the moved pawn to the new position
@@ -398,7 +400,7 @@ public class GameController
 			model.addAttribute("game", game.get());
 			return GAME_REDIRECTION + game.get().getId();
 		}
-		logger.info("game {} not found for route moveOnAnyPawn", gameId);
+		logger.info("game " + gameId + " not found for route moveOnAnyPawn");
 		return INDEX_REDIRECTION;
 	}
 }
