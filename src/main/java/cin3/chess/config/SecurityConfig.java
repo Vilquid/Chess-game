@@ -24,6 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Autowired
 	private DbUserDetailsService userDetailsService;
 
+	/**
+	 * @fn configure
+	 * @brief Configure the security of the application
+	 * @param http the {@link HttpSecurity} to modify
+	 * @throws Exception
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
@@ -45,12 +51,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 				.permitAll();
 	}
 
+	/**
+	 * @fn configureGlobal
+	 * @brief Configure the authentication manager
+	 * @param auth the {@link AuthenticationManagerBuilder} to modify
+	 * @throws Exception
+	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
 	{
 		auth.authenticationProvider(authenticationProvider());
 	}
 
+	/**
+	 * @fn authenticationProvider
+	 * @brief Create the authentication provider
+	 * @return the {@link DaoAuthenticationProvider}
+	 */
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider()
 	{
@@ -61,6 +78,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		return authProvider;
 	}
 
+	/**
+	 * @fn encoder
+	 * @brief Create the password encoder
+	 * @return the {@link PasswordEncoder}
+	 */
 	@Bean
 	public PasswordEncoder encoder()
 	{
@@ -68,6 +90,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		return new BCryptPasswordEncoder(10);
 	}
 
+	/**
+	 * @fn springSecurityDialect
+	 * @brief Create the Thymeleaf (Spring) dialect
+	 * @return the {@link SpringSecurityDialect}
+	 */
 	@Bean
 	public SpringSecurityDialect springSecurityDialect()
 	{

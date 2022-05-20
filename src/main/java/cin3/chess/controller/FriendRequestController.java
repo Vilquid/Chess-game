@@ -32,6 +32,21 @@ public class FriendRequestController
 	@Autowired
 	private FriendRequestRepository friendRequests;
 
+//	@GetMapping // pas utilisée
+//	public String getFriends(@AuthenticationPrincipal User user, Model model)
+//	{
+//		List<FriendRequest> friendRequests = service.getFriendRequests(user);
+//		model.addAttribute("friendRequests", friendRequests);
+//		return "friends";
+//	}
+
+	/**
+	 * @fn sendFriendRequests
+	 * @brief get all friend requests of the current user
+	 * @param currentUser
+	 * @param model
+	 * @return string
+	 */
 	@GetMapping("/send")
 	public String sendFriendRequest(@AuthenticationPrincipal User currentUser, Model model)
 	{
@@ -39,11 +54,10 @@ public class FriendRequestController
 		List<cin3.chess.domain.User> userLists = users.findAll();
 		// friends list
 		List<FriendRequest> friends = friendRequests.findAllByReceiverAndIsAccepted(currentUser, true);
-		List<String> senders = friends.stream().map(FriendRequest::getSender).collect(Collectors.toList());
+//		List<String> senders = friends.stream().map(FriendRequest::getSender).collect(Collectors.toList());
+		List<String> senders = friends.stream().map(FriendRequest::getSender).toList();
 
-		userLists.removeIf(user -> {
-			return user.getId().equals(currentUser.getId()) || senders.contains(user.getUsername());
-		});
+		userLists.removeIf(user -> user.getId().equals(currentUser.getId()) || senders.contains(user.getUsername()));
 
 		FriendRequestForm form = new FriendRequestForm();
 		form.setSender(currentUser.getUsername());
@@ -54,6 +68,13 @@ public class FriendRequestController
 		return "user/send-friend-request";
 	}
 
+	/**
+	 * @fn sendFriendRequestsToUser
+	 * @brief Send a friend request to a user
+	 * @param form the current user
+	 * @param result the model
+	 * @return string
+	 */
 	@PostMapping("/send")
 	public String sendFriendRequestToUser(@Valid @ModelAttribute("request") FriendRequestForm form, BindingResult result)
 	{
@@ -77,6 +98,13 @@ public class FriendRequestController
 		return "redirect:/";
 	}
 
+	/**
+	 * @fn acceptFriendRequest
+	 * @brief accept a friend request
+	 * @param userId the friend request id
+	 * @param username the current user
+	 * @return string
+	 */
 	@GetMapping("/accept")
 	public String acceptFriendRequest(@RequestParam Long userId, @RequestParam String username)
 	{
@@ -103,12 +131,16 @@ public class FriendRequestController
 		return "redirect:/";
 	}
 
+	/**
+	 * @fn declineFriendRequest
+	 * @brief decline a friend request
+	 * @param userId the friend request id
+	 * @param username the current user
+	 * @return string
+	 */
 	@GetMapping("/decline")
 	@Transactional
-	public String declineFriendRequest(
-			@RequestParam final Long userId,
-			@RequestParam final String username
-	)
+	public String declineFriendRequest(@RequestParam final Long userId, @RequestParam final String username)
 	{
 		Optional<User> currentUser = users.findById(userId);
 		currentUser.ifPresent(user -> friendRequests.deleteByReceiverAndSenderAndIsAccepted(user, username, false));
@@ -116,6 +148,13 @@ public class FriendRequestController
 		return "redirect:/";
 	}
 
+	/**
+	 * @fn getFriends
+	 * @brief get the list of friends
+	 * @param model the model
+	 * @param username the current user
+	 * @return string
+	 */
 	@GetMapping("/delete")
 	@Transactional
 	public String deleteFriend(@RequestParam final Long userId, @RequestParam final String username)

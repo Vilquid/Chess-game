@@ -27,6 +27,11 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	/**
+	 * @brief This method is called when the application context is refreshed.
+	 * @param contextRefreshedEvent
+	 * @return void
+	 */
 	@Override
 	@Transactional // j'ai chopé le @Transactional de gradle
 	public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent)
