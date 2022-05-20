@@ -28,6 +28,13 @@ public class UserController
 		return "user/login";
 	}
 
+	/**
+	 * The function takes a model object as a parameter, adds a user object to the model, and returns the name of the view to
+	 * be rendered
+	 *
+	 * @param model The model is a map of values that is passed to the view.
+	 * @return A string that is the name of the view.
+	 */
 	@GetMapping("/register")
 	public String register(Model model)
 	{
@@ -35,6 +42,15 @@ public class UserController
 		return "user/register";
 	}
 
+	/**
+	 * If the form has errors, return the form with the errors. Otherwise, save the form and redirect to the login page
+	 *
+	 * @param form The form object that will be used to populate the form.
+	 * @param result The BindingResult must come right after the model object that is validated or else Spring fails to
+	 * validate the object and throws an exception.
+	 * @param model The model is a Map of key-value pairs that will be passed to the view.
+	 * @return A redirect to the login page.
+	 */
 	@PostMapping("/register")
 	public String addUser(@Valid @ModelAttribute("user") UserForm form, BindingResult result, Model model)
 	{

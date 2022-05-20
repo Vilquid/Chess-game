@@ -14,6 +14,11 @@ public class LoginListener implements ApplicationListener<InteractiveAuthenticat
 	@Autowired
 	private UserRepository users;
 
+	/**
+	 * When a user logs in, the user's login status is set to true
+	 *
+	 * @param event The event that was fired.
+	 */
 	@Override
 	public void onApplicationEvent(InteractiveAuthenticationSuccessEvent event)
 	{
