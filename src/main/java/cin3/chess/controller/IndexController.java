@@ -33,6 +33,13 @@ public class IndexController
 	@Autowired
 	private GameRequestRepository gameRequests;
 
+	/**
+	 * It returns the index page with all the necessary data
+	 *
+	 * @param user the current user
+	 * @param model The model is a Map that is used to pass values from the controller to the view.
+	 * @return The welcome page is being returned.
+	 */
 	@GetMapping("/")
 	public String welcome(@AuthenticationPrincipal User user, final Model model)
 	{

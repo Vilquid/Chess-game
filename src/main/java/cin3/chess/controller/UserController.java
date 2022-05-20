@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 public class UserController
 {
 	//	private Logger logger = LoggerFactory.getLogger(UserController.class);
-	//	private Logger logger = (Logger) LoggerFactory.getLogger(UserController.class);
 	private final Logger logger = (Logger) LoggerFactory.getLogger(UserController.class);
 	@Autowired
 	private DbUserDetailsService userService;

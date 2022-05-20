@@ -149,9 +149,9 @@ public class FriendRequestController
 	}
 
 	/**
-	 * @fn getFriends
-	 * @brief get the list of friends
-	 * @param model the model
+	 * @fn deleteFriend
+	 * @brief delete a friend
+	 * @param userId the friend request id
 	 * @param username the current user
 	 * @return string
 	 */

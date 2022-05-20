@@ -20,6 +20,14 @@ public class GameRequestController
 	@Autowired
 	private GameRequestRepository requests;
 
+	/**
+	 * If the user exists, create a new GameRequest object, set the sender to the current user, set the receiver to the user
+	 * with the given ID, and save the request.
+	 *
+	 * @param currentUser The currently logged in user.
+	 * @param friendId The id of the user you want to send a friend request to.
+	 * @return A redirect to the root page.
+	 */
 	@GetMapping("/send")
 	public String sendFriendRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
 	{
@@ -37,6 +45,14 @@ public class GameRequestController
 		return "redirect:/";
 	}
 
+	/**
+	 * If the user is logged in, and the user has a friend request from the friend with the given ID, and the request hasn't
+	 * been accepted yet, then accept the request and redirect to the game initialization page
+	 *
+	 * @param currentUser The user who is currently logged in.
+	 * @param friendId The id of the user who sent the request
+	 * @return A redirect to the game init page.
+	 */
 	@GetMapping("/accept")
 	public String acceptGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId)
 	{
@@ -55,6 +71,12 @@ public class GameRequestController
 		return "redirect:/game/init/" + friendId + "/" + currentUser.getId();
 	}
 
+	/**
+	 * If the sender exists, delete the request.
+	 *
+	 * @param senderId The id of the user who sent the request.
+	 * @return A redirect to the root path.
+	 */
 	@GetMapping("/decline")
 	@Transactional
 	public String decline(@RequestParam Long senderId)
@@ -65,6 +87,13 @@ public class GameRequestController
 		return "redirect:/";
 	}
 
+	/**
+	 * It deletes a game request from the database
+	 *
+	 * @param currentUser the user who is currently logged in
+	 * @param friendId the id of the user who sent the request
+	 * @return A redirect to the root page.
+	 */
 	@GetMapping("/cancel")
 	@Transactional
 	public String cancelGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId) // pas encore utilisée
@@ -83,6 +112,13 @@ public class GameRequestController
 		return "redirect:/";
 	}
 
+	/**
+	 * It deletes a game request from the database
+	 *
+	 * @param currentUser the user who is currently logged in
+	 * @param friendId the id of the user who sent the request
+	 * @return A redirect to the root page.
+	 */
 	@GetMapping("/delete")
 	@Transactional
 	public String deleteGameRequest(@AuthenticationPrincipal User currentUser, @RequestParam Long friendId) // pas encore utilisée

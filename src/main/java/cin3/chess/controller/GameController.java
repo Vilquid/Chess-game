@@ -104,12 +104,22 @@ public class GameController
 		return INDEX_REDIRECTION;
 	}
 
+	/**
+	 * @fn play
+	 * @brief play a game
+ 	 * @param model the model
+	 * @param id the game id
+	 * @param currentUser the current user
+	 * @return
+	 */
 	@GetMapping("/play/{id}")
 	public String play(final Model model, @PathVariable final Long id, @AuthenticationPrincipal User currentUser)
 	{
 		Optional<Game> game = games.findById(id);
-		if (game.isPresent()) {
-			if (game.get().getWhitePlayer().getPlaying() && game.get().getBlackPlayer().getPlaying()) {
+		if (game.isPresent())
+		{
+			if (game.get().getWhitePlayer().getPlaying() && game.get().getBlackPlayer().getPlaying())
+			{
 				game.get().setPause(false);
 			}
 
@@ -121,11 +131,14 @@ public class GameController
 			model.addAttribute("time_move", gameService.getTimeElapsed(game.get().getTimeCurrentPlayer()));
 
 			logger.info("Bool echec " + gameService.checkEchec(game.get()));
-			if (gameService.checkEchec(game.get())) {
+
+			if (gameService.checkEchec(game.get()))
+			{
 				game.get().setEchec(1);
 			} else {
 				game.get().setEchec(0);
 			}
+
 			logger.info("Bool mate " + gameService.checkMate(game.get()));
 			model.addAttribute("mate", gameService.checkMate(game.get()));
 
@@ -143,14 +156,25 @@ public class GameController
 		return INDEX_REDIRECTION;
 	}
 
+	/**
+	 * @fn promote
+	 * @brief promote a pawn
+ 	 * @param model the model
+	 * @param gameId the game id
+	 * @param promoteId the current user
+	 * @return
+	 */
 	@GetMapping("/promote/{gameId}/{promoteId}")
 	public String promote(final Model model, @PathVariable final Long gameId, @PathVariable final Long promoteId)
 	{
 		Optional<Game> game = games.findById(gameId);
+
 		if (game.isPresent())
 		{
 			Optional<Figure> fig = figures.findById(promoteId);
-			if (fig.isPresent()) {
+
+			if (fig.isPresent())
+			{
 				model.addAttribute("game", game.get());
 				model.addAttribute("error_msg", "");
 				model.addAttribute("figure", fig.get());
@@ -159,13 +183,23 @@ public class GameController
 				return "game-promote";
 			}
 		}
+
 		logger.info("game " + gameId + " not found for route /promote/" + gameId + "/" + promoteId);
+
 		return INDEX_REDIRECTION;
 	}
 
+	/**
+	 * @fn promoteForm
+ 	 * @param form the form
+	 * @param result the result
+	 * @return
+	 */
 	@PostMapping("/promote")
-	public String promoteForm(PromoteForm form, BindingResult result) {
-		if (result.hasErrors()) {
+	public String promoteForm(PromoteForm form, BindingResult result)
+	{
+		if (result.hasErrors())
+		{
 			logger.info("error promote form");
 		}
 
@@ -189,6 +223,14 @@ public class GameController
 	}
 
 
+	/**
+	 * @brief It takes the gameId, the winner and the looser as parameters, and then it sets the game as finished, and sets the
+	 * winner
+	 * @param gameId the id of the game
+	 * @param winner the username of the winner
+	 * @param looser the player who lost the game
+	 * @return A string
+	 */
 	@GetMapping("/endgame/{gameId}/{winner}/{looser}")
 	public String EndGame(@PathVariable final Long gameId, @PathVariable final String winner, @PathVariable final String looser)
 	{
@@ -220,14 +262,18 @@ public class GameController
 	}
 
 
+	/**
+	 * It checks if the move is valid, if it is, it moves the pawn and deletes the pawn that was taken en passant
+	 *
+	 * @param gameId the id of the game
+	 * @param pawnId the id of the pawn that is going to be moved
+	 * @param x the x coordinate of the destination
+	 * @param y the y coordinate of the pawn
+	 * @param currentUser the user who is currently logged in
+	 * @return A string
+	 */
 	@GetMapping("/passant/{gameId}/{pawnId}/{x}/{y}")
-	public String priseEnPassant(
-			@PathVariable final Long gameId,
-			@PathVariable final Long pawnId,
-			@PathVariable final Integer x,
-			@PathVariable final Integer y,
-			@AuthenticationPrincipal User currentUser
-	)
+	public String priseEnPassant(@PathVariable final Long gameId, @PathVariable final Long pawnId, @PathVariable final Integer x, @PathVariable final Integer y, @AuthenticationPrincipal User currentUser)
 	{
 		Optional<Game> game = games.findById(gameId);
 		if (game.isPresent())
@@ -248,7 +294,6 @@ public class GameController
 						figures.delete(f2);
 						Move m = new Move();
 						m.setPositionStart(f.getMoveCode());
-
 
 						f.setX(x);
 						f.setY(y);
@@ -276,6 +321,18 @@ public class GameController
 		return INDEX_REDIRECTION;
 	}
 
+
+	/**
+	 * It moves a pawn on the board
+	 *
+	 * @param model the model object that will be used to render the view
+	 * @param gameId the id of the game
+	 * @param pawnId the id of the pawn to move
+	 * @param x the x coordinate of the cell where the pawn is moved
+	 * @param y the y coordinate of the pawn to move
+	 * @param currentUser the user who is currently logged in
+	 * @return A string that is the name of the view to be rendered.
+	 */
 	@GetMapping("/move/{gameId}/{pawnId}/{x}/{y}")
 	public String moveOnVoidCell(final Model model, @PathVariable final Long gameId, @PathVariable final Long pawnId, @PathVariable final Integer x, @PathVariable final Integer y, @AuthenticationPrincipal User currentUser)
 	{
@@ -337,19 +394,23 @@ public class GameController
 		return INDEX_REDIRECTION;
 	}
 
+	// A controller that handles the move of a pawn on another pawn.
 	@GetMapping("/move/{gameId}/{pawnId1}/{pawnId2}")
 	public String moveOnAnyPawn(final Model model, @PathVariable final Long gameId, @PathVariable final Long pawnId1, @PathVariable final Long pawnId2, @AuthenticationPrincipal User currentUser)
 	{
 		Optional<Game> game = games.findById(gameId);
-		if (game.isPresent()) {
+		if (game.isPresent())
+		{
 			// change the coordinate of the moved pawn to the new position
 			Figure f = figures.getOne(pawnId1);
 			Figure f2 = figures.getOne(pawnId2);
 
 			// the player is able to move is own pawns only
-			if (f.getOwner() == game.get().getCurrentPlayer() && f.getOwner() != f2.getOwner() && game.get().getCurrentUser().getUsername().equals(currentUser.getUsername())) {
+			if (f.getOwner() == game.get().getCurrentPlayer() && f.getOwner() != f2.getOwner() && game.get().getCurrentUser().getUsername().equals(currentUser.getUsername()))
+			{
 				// check the movement
-				if (gameService.checkAny(game.get(), f, f2.getX(), f2.getY())) {
+				if (gameService.checkAny(game.get(), f, f2.getX(), f2.getY()))
+				{
 					Move m = new Move();
 					m.setPositionStart(f.getMoveCode());
 
@@ -371,9 +432,11 @@ public class GameController
 
 					moves.save(m);
 					logger.info("Bool echec " + gameService.checkEchec(game.get()));
-					if (gameService.checkEchec(game.get())) {
+					if (gameService.checkEchec(game.get()))
+					{
 						game.get().setEchec(1);
-					} else {
+					} else
+					{
 						game.get().setEchec(0);
 					}
 					// change player
@@ -388,11 +451,13 @@ public class GameController
 					games.save(g);
 
 					// pawn promotion
-					if (gameService.enablePromotePawn(f)) {
+					if (gameService.enablePromotePawn(f))
+					{
 						return "redirect:/game/promote/" + game.get().getId() + "/" + f.getId();
 					}
 				}
-			} else {
+			} else
+			{
 				//TODO throw exception and inform the view
 				logger.info("You can't move a pawn that doesn't belong to you !");
 			}
