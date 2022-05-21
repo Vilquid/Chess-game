@@ -12,7 +12,8 @@ public class FigureRepository
 		
 	}
 
-	public void saveAll(List<Figure> grid) {
+	public void saveAll(List<Figure> grid)
+	{
 	}
 
 	public Optional<Figure> findById(Long promoteId)
