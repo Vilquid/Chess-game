@@ -9,15 +9,15 @@ Another chess game (sever-side)
 ## Avant de lancer le projet
 
 ```postgresql
-CREATE DATABASE springchess;
-CREATE ROLE springchess WITH LOGIN PASSWORD 'springchess';
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO springchess;
+CREATE DATABASE chess;
+CREATE ROLE chess WITH LOGIN PASSWORD 'chess';
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO chess;
 ```
 
 ou
 
 ```bash
-sudo psql -f test.sql -U postgres
+sudo psql -f chess.sql -U postgres
 ```
 
 ## Installation
