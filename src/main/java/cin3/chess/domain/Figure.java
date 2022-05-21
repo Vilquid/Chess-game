@@ -12,6 +12,11 @@ public class Figure
 
 	public static final int CODE_NUMBER = 9812;
 
+	@javax.persistence.Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id_figure", nullable = false)
+	private Long idFigure;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "figures_seq_gen")
@@ -38,6 +43,14 @@ public class Figure
 
 	@ManyToOne
 	private Game game;
+
+	public Long getIdFigure() {
+		return idFigure;
+	}
+
+	public void setIdFigure(Long idFigure) {
+		this.idFigure = idFigure;
+	}
 
 	public Long getId()
 	{

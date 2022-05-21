@@ -41,6 +41,11 @@ public class Game
 	 */
 	public static final int WIDTH = 8;
 
+	@javax.persistence.Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id_game", nullable = false)
+	private Long idGame;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "games_seq_gen")
@@ -88,6 +93,14 @@ public class Game
 
 	@Enumerated
 	private PlayerName winner;
+
+	public Long getIdGame() {
+		return idGame;
+	}
+
+	public void setIdGame(Long idGame) {
+		this.idGame = idGame;
+	}
 
 	public Long getId()
 	{

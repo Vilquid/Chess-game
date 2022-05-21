@@ -7,6 +7,11 @@ import javax.persistence.*;
 @Entity
 public class FriendRequest
 {
+	@javax.persistence.Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id_friend_request", nullable = false)
+	private Long idFriendRequest;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "friend_request_seq_gen")
@@ -21,6 +26,14 @@ public class FriendRequest
 
 	@Column
 	private Boolean isAccepted;
+
+	public Long getIdFriendRequest() {
+		return idFriendRequest;
+	}
+
+	public void setIdFriendRequest(Long idFriendRequest) {
+		this.idFriendRequest = idFriendRequest;
+	}
 
 	public Long getId()
 	{

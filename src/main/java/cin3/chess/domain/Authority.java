@@ -8,6 +8,11 @@ import javax.persistence.*;
 @Entity
 public class Authority implements GrantedAuthority
 {
+	@javax.persistence.Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id_authority", nullable = false)
+	private Long idAuthority;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "authority_seq_gen")
@@ -15,6 +20,14 @@ public class Authority implements GrantedAuthority
 	private Long id;
 
 	private String authority;
+
+	public Long getIdAuthority() {
+		return idAuthority;
+	}
+
+	public void setIdAuthority(Long idAuthority) {
+		this.idAuthority = idAuthority;
+	}
 
 	public Long getId()
 	{

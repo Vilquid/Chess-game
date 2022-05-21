@@ -7,6 +7,11 @@ import javax.persistence.*;
 @Entity
 public class Move
 {
+	@javax.persistence.Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id_move", nullable = false)
+	private Long idMove;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moves_seq_gen")
@@ -27,6 +32,14 @@ public class Move
 
 	@ManyToOne
 	private Game game;
+
+	public Long getIdMove() {
+		return idMove;
+	}
+
+	public void setIdMove(Long idMove) {
+		this.idMove = idMove;
+	}
 
 	public Long getTime()
 	{

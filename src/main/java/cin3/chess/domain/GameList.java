@@ -7,6 +7,11 @@ import javax.persistence.*;
 @Entity
 public class GameList
 {
+	@javax.persistence.Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id_game_list", nullable = false)
+	private Long idGameList;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "games_list_seq_gen")
@@ -21,6 +26,14 @@ public class GameList
 
 	@Column
 	private Long gameId;
+
+	public Long getIdGameList() {
+		return idGameList;
+	}
+
+	public void setIdGameList(Long idGameList) {
+		this.idGameList = idGameList;
+	}
 
 	public Long getId()
 	{
