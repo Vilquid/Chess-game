@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/friends")
@@ -32,7 +31,15 @@ public class FriendRequestController
 	@Autowired
 	private FriendRequestRepository friendRequests;
 
-//	@GetMapping // pas utilisée
+	/**
+	 * It gets the friend requests of the user and adds them to the model
+	 *
+	 * @param user the user that is currently logged in
+	 * @param model the model object that will be used to render the view.
+	 * @return A list of friend requests
+	 * @implNote none used
+	 */
+//	@GetMapping("/requests")
 //	public String getFriends(@AuthenticationPrincipal User user, Model model)
 //	{
 //		List<FriendRequest> friendRequests = service.getFriendRequests(user);
@@ -41,11 +48,12 @@ public class FriendRequestController
 //	}
 
 	/**
-	 * @fn sendFriendRequests
-	 * @brief get all friend requests of the current user
-	 * @param currentUser
-	 * @param model
-	 * @return string
+	 * It gets a list of all users, removes the current user and all users that are already friends, and then passes the
+	 * remaining users to the view
+	 *
+	 * @param currentUser The currently logged in user.
+	 * @param model This is the model that will be passed to the view.
+	 * @return A list of users that are not the current user and are not already friends with the current user.
 	 */
 	@GetMapping("/send")
 	public String sendFriendRequest(@AuthenticationPrincipal User currentUser, Model model)
@@ -69,11 +77,13 @@ public class FriendRequestController
 	}
 
 	/**
-	 * @fn sendFriendRequestsToUser
-	 * @brief Send a friend request to a user
-	 * @param form the current user
-	 * @param result the model
-	 * @return string
+	 * It takes a form object, validates it, and if it's valid, it creates a new friend request object and saves it to the
+	 * database
+	 *
+	 * @param form The form object that will be used to store the data from the form.
+	 * @param result The BindingResult object that holds the result of the validation and binding and contains errors that may
+	 * have occurred.
+	 * @return A redirect to the root path.
 	 */
 	@PostMapping("/send")
 	public String sendFriendRequestToUser(@Valid @ModelAttribute("request") FriendRequestForm form, BindingResult result)
@@ -99,11 +109,12 @@ public class FriendRequestController
 	}
 
 	/**
-	 * @fn acceptFriendRequest
-	 * @brief accept a friend request
-	 * @param userId the friend request id
-	 * @param username the current user
-	 * @return string
+	 * It takes in a userId and a username, finds the user with the given userId, finds the friend request with the given
+	 * username and the current user, and sets the friend request to accepted
+	 *
+	 * @param userId the id of the current user
+	 * @param username the username of the person who sent the friend request
+	 * @return A redirect to the home page.
 	 */
 	@GetMapping("/accept")
 	public String acceptFriendRequest(@RequestParam Long userId, @RequestParam String username)
@@ -132,11 +143,11 @@ public class FriendRequestController
 	}
 
 	/**
-	 * @fn declineFriendRequest
-	 * @brief decline a friend request
-	 * @param userId the friend request id
-	 * @param username the current user
-	 * @return string
+	 * It deletes a friend request from the database
+	 *
+	 * @param userId The id of the user who is currently logged in.
+	 * @param username The username of the user who sent the friend request
+	 * @return A redirect to the home page.
 	 */
 	@GetMapping("/decline")
 	@Transactional
@@ -149,11 +160,11 @@ public class FriendRequestController
 	}
 
 	/**
-	 * @fn deleteFriend
-	 * @brief delete a friend
-	 * @param userId the friend request id
-	 * @param username the current user
-	 * @return string
+	 * It deletes the friendship between the current user and the user with the username passed in as a parameter
+	 *
+	 * @param userId The id of the current user
+	 * @param username The username of the friend you want to delete
+	 * @return A redirect to the root page.
 	 */
 	@GetMapping("/delete")
 	@Transactional

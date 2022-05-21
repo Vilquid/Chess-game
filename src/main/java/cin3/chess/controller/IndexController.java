@@ -71,8 +71,16 @@ public class IndexController
 		return "index";
 	}
 
+	/**
+	 * It sets the user's playing and logIn attributes to false, and then redirects to the home page
+	 *
+	 * @param user the user that is currently logged in
+	 * @param model The model is a Map that is used to store the data that will be displayed on the view page.
+	 * @return A string
+	 * @implNote none used
+	 */
 //	@GetMapping("/logout")
-//	public String logout(@AuthenticationPrincipal User user, final Model model) // pas utilisée
+//	public String logout(@AuthenticationPrincipal User user, final Model model)
 //	{
 //		User u = users.findByUsername(user.getUsername());
 //		u.setPlaying(false);

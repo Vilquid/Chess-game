@@ -38,4 +38,15 @@ public class FriendRequestService
 
 		return userFriends;
 	}
+
+	/**
+	 * Get all friend requests for a user where the request has not been accepted.
+	 *
+	 * @param user The user who is receiving the friend request.
+	 * @return A list of friend requests that have not been accepted.
+	 */
+	public List<FriendRequest> getFriendRequests(User user)
+	{
+		return friendRequests.findAllByReceiverAndIsAccepted(user, false);
+	}
 }

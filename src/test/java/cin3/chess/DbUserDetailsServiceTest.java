@@ -31,6 +31,9 @@ public class DbUserDetailsServiceTest
 	@InjectMocks
 	private DbUserDetailsService service;
 
+	/**
+	 * Given a null user, when I create a form, then I expect a form to be returned
+	 */
 	@Test
 	public void createFormNullTest()
 	{
@@ -39,6 +42,9 @@ public class DbUserDetailsServiceTest
 		assertThat(result).isNotNull();
 	}
 
+	/**
+	 * Given a user, create a user form.
+	 */
 	@Test
 	public void createFormTest()
 	{
@@ -53,6 +59,9 @@ public class DbUserDetailsServiceTest
 		assertThat(result.getUsername()).isEqualTo("john.doe");
 	}
 
+	/**
+	 * It tests that the save method of the UserService class works as expected
+	 */
 	@Test
 	public void saveUserTest()
 	{

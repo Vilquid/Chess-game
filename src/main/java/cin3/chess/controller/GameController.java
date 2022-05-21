@@ -54,6 +54,13 @@ public class GameController
 //	private Logger logger = LoggerFactory.getLogger(GameController.class);
 	private Logger logger = (Logger) LoggerFactory.getLogger(GameController.class);
 
+	/**
+	 * It creates a new game, generates the grid, saves the figures and redirects to the game page
+	 *
+	 * @param whiteUserId the id of the white player
+	 * @param blackUserId the id of the user who will play with the black figures
+	 * @return The game is being returned.
+	 */
 	@GetMapping("/init/{whiteUserId}/{blackUserId}")
 	public String init(@PathVariable Long whiteUserId, @PathVariable Long blackUserId)
 	{
@@ -105,12 +112,12 @@ public class GameController
 	}
 
 	/**
-	 * @fn play
-	 * @brief play a game
- 	 * @param model the model
-	 * @param id the game id
-	 * @param currentUser the current user
-	 * @return
+	 * It's the controller for the game-play page
+	 *
+	 * @param model the model object that will be passed to the view
+	 * @param id the id of the game
+	 * @param currentUser the user currently logged in
+	 * @return A String
 	 */
 	@GetMapping("/play/{id}")
 	public String play(final Model model, @PathVariable final Long id, @AuthenticationPrincipal User currentUser)
@@ -156,13 +163,14 @@ public class GameController
 		return INDEX_REDIRECTION;
 	}
 
+
 	/**
-	 * @fn promote
-	 * @brief promote a pawn
- 	 * @param model the model
-	 * @param gameId the game id
-	 * @param promoteId the current user
-	 * @return
+	 * It returns the game-promote.html page, which is the page that allows the user to choose which piece to promote to
+	 *
+	 * @param model The model object that will be used to render the view.
+	 * @param gameId the id of the game
+	 * @param promoteId the id of the pawn that is being promoted
+	 * @return A String
 	 */
 	@GetMapping("/promote/{gameId}/{promoteId}")
 	public String promote(final Model model, @PathVariable final Long gameId, @PathVariable final Long promoteId)
@@ -190,10 +198,13 @@ public class GameController
 	}
 
 	/**
-	 * @fn promoteForm
- 	 * @param form the form
-	 * @param result the result
-	 * @return
+	 * It takes a promote form, checks if it has errors, if not, it finds the figure with the id in the form, checks if it
+	 * exists, if it does, it checks if the name in the form is a valid promotion, if it is, it sets the name and code of the
+	 * figure to the name and code of the promotion, and saves the figure
+	 *
+	 * @param form the object that will be filled with the data from the form
+	 * @param result The BindingResult object is used to store the validation errors.
+	 * @return A redirect to the game page.
 	 */
 	@PostMapping("/promote")
 	public String promoteForm(PromoteForm form, BindingResult result)
@@ -224,7 +235,7 @@ public class GameController
 
 
 	/**
-	 * @brief It takes the gameId, the winner and the looser as parameters, and then it sets the game as finished, and sets the
+	 * It takes the gameId, the winner and the looser as parameters, and then it sets the game as finished, and sets the
 	 * winner
 	 * @param gameId the id of the game
 	 * @param winner the username of the winner
@@ -394,7 +405,16 @@ public class GameController
 		return INDEX_REDIRECTION;
 	}
 
-	// A controller that handles the move of a pawn on another pawn.
+	/**
+	 * A controller that handles the move of a pawn on another pawn.
+	 *
+	 * @param model the model object that will be passed to the view
+	 * @param gameId the id of the game
+	 * @param pawnId1 the id of the pawn that is moved
+	 * @param pawnId2 the id of the pawn that is being moved to
+	 * @param currentUser the user who is currently logged in
+	 * @return A string
+	 */
 	@GetMapping("/move/{gameId}/{pawnId1}/{pawnId2}")
 	public String moveOnAnyPawn(final Model model, @PathVariable final Long gameId, @PathVariable final Long pawnId1, @PathVariable final Long pawnId2, @AuthenticationPrincipal User currentUser)
 	{

@@ -25,10 +25,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	private DbUserDetailsService userDetailsService;
 
 	/**
-	 * @fn configure
-	 * @brief Configure the security of the application
-	 * @param http the {@link HttpSecurity} to modify
-	 * @throws Exception
+	 * "If the user is not authenticated, then redirect to the login page. Otherwise, allow access to the requested resource."
+	 *
+	 * The first line of the function is a call to the authorizeRequests() method. This method is used to configure the
+	 * authorization rules for the application
+	 *
+	 * @param http This is the main object that is used to configure the security of the application.
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
@@ -52,10 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	}
 
 	/**
-	 * @fn configureGlobal
-	 * @brief Configure the authentication manager
-	 * @param auth the {@link AuthenticationManagerBuilder} to modify
-	 * @throws Exception
+	 * This function is called by the Spring Security framework to configure the authentication provider.
+	 *
+	 * @param auth This is the AuthenticationManagerBuilder object that is used to create an AuthenticationManager object.
 	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
@@ -64,9 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	}
 
 	/**
-	 * @fn authenticationProvider
-	 * @brief Create the authentication provider
-	 * @return the {@link DaoAuthenticationProvider}
+	 * > This function creates a new DaoAuthenticationProvider object, sets the userDetailsService to the userDetailsService
+	 * object we created earlier, and sets the passwordEncoder to the encoder() function we created earlier
+	 *
+	 * @return A DaoAuthenticationProvider object.
 	 */
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider()
@@ -91,9 +93,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	}
 
 	/**
-	 * @fn springSecurityDialect
-	 * @brief Create the Thymeleaf (Spring) dialect
-	 * @return the {@link SpringSecurityDialect}
+	 * The SpringSecurityDialect class is a dialect for Spring Security that provides a way to use the Spring Security tags
+	 * inside of Thymeleaf
+	 *
+	 * @return A SpringSecurityDialect object.
 	 */
 	@Bean
 	public SpringSecurityDialect springSecurityDialect()
