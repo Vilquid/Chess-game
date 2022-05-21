@@ -23,9 +23,7 @@ public class ChessGameService
 	private Logger logger = (Logger) LoggerFactory.getLogger(ChessGameService.class);
 
 	/**
-	 * "Add a figure to the grid."
-	 *
-	 * The function is private, so it can only be called from within the class
+	 * Add a figure to the grid. The function is private, so it can only be called from within the class
 	 *
 	 * @param grid The list of figures that will be added to the game.
 	 * @param game The game object that the figure is being added to.
@@ -303,4 +301,261 @@ public class ChessGameService
 		return false;
 	}
 
+	/**
+	 * It checks if a figure can move to a certain position
+	 *
+	 * @param game The game object
+	 * @param f1 The figure that is moving
+	 * @param dx the x-coordinate of the destination
+	 * @param dy the y-coordinate of the destination
+	 * @return A boolean value.
+	 */
+	public boolean checkAny(Game game, Figure f1, int dx, int dy)
+	{
+		FigureName name = FigureName.stringToFigureName(f1.getName());
+		int x = f1.getX();
+		int y = f1.getY();
+		boolean check = false;
+
+		switch (name)
+		{
+			case KING:
+				check = checkKing(game, f1, dx, dy);
+				break;
+			case QUEEN:
+				check = checkQueen(game, x, y, dx, dy);
+				break;
+			case BISHOP:
+				check = checkBishop(game, x, y, dx, dy);
+				break;
+			case ROOK:
+				check = checkRook(game, x, y, dx, dy);
+				break;
+			case KNIGHT:
+				check = checkKnight(x, y, dx, dy);
+				break;
+			case PAWN:
+				check = checkPawn(game, f1, dx, dy);
+				break;
+		}
+
+		return check;
+	}
+
+	/**
+	 * If the king and the right rook are at their starting positions, and the segment between them is free, then the king can
+	 * move two squares to the right.
+	 *
+	 * @param game the current game
+	 * @param f1 the figure to move
+	 * @param dx the destination x coordinate
+	 * @param dy the destination y coordinate
+	 * @return The method is returning a boolean value.
+	 */
+	public boolean checkSmallCastling(Game game, Figure f1, int dx, int dy)
+	{
+		// Theoretical king's starting position
+		int yKing = (f1.getOwner() == PlayerName.BLACK.ordinal()) ? 0 : 7;
+		int xKing = 4;
+
+		// verify the king is at it starting point
+		if (f1.getX() == xKing && f1.getY() == yKing && f1.getCountPlayed() == 0)
+		{
+			// verify the right rook is at it starting point
+			if (game.getFigureAt(7, yKing) != null && game.getFigureAt(7, yKing).getCountPlayed() == 0)
+			{
+				// verify the segment is free between the king and the rook
+				isSegmentFree(game, f1.getX(), f1.getY(), 7, yKing);
+				// verify the destination of the king
+				return dx == 6 && dy == yKing;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * If the king and the right rook are at their starting positions, and the segment between them is free, then the king can
+	 * move two squares to the right.
+	 *
+	 * @param game the current game
+	 * @param f1 the figure that is moving
+	 * @param dx the destination x coordinate
+	 * @param dy the destination y coordinate
+	 * @return The method is returning a boolean value.
+	 */
+	public boolean checkBigCastling(Game game, Figure f1, int dx, int dy)
+	{
+		// Theoretical king's starting position
+		int yKing = (f1.getOwner() == PlayerName.BLACK.ordinal()) ? 0 : 7;
+		int xKing = 4;
+
+		// verify the king is at it starting point
+		if (f1.getX() == xKing && f1.getY() == yKing && f1.getCountPlayed() == 0)
+		{
+			// verify the right rook is at it starting point
+			if (game.getFigureAt(7, yKing) != null && game.getFigureAt(7, yKing).getCountPlayed() == 0)
+			{
+				// verify the segment is free between the king and the rook
+				isSegmentFree(game, f1.getX(), f1.getY(), 1, yKing);
+				// verify the destination of the king
+				return dx == 2 && dy == yKing;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Change the position of the left rook
+	 *
+	 * @param game the game object
+	 * @param xRook the x-coordinate of the rook to be moved
+	 * @param dxRook the x-coordinate of the rook after castling
+	 */
+	public void startCastling(Game game, int xRook, int dxRook)
+	{
+		int player = game.getCurrentPlayer();
+		int yRook = (player == PlayerName.BLACK.ordinal()) ? 0 : 7;
+		// change the position of the left rook
+		game.getFigureAt(xRook, yRook).setX(dxRook);
+	}
+
+	/**
+	 * If the figure is a pawn and it's on the first or last row, then it can be promoted
+	 *
+	 * @param f The figure that is being checked for promotion.
+	 * @return A boolean value.
+	 */
+	public boolean enablePromotePawn(Figure f)
+	{
+		return (FigureName.stringToFigureName(f.getName()) == FigureName.PAWN && (f.getY() == 0 || f.getY() == 7));
+	}
+
+	/**
+	 * It finds the king of each player and sets the id of the king in the game object
+	 *
+	 * @param game The game object
+	 */
+	public void findKing(Game game)
+	{
+		for (int i = 0; i < Game.WIDTH; i++)
+		{
+			for (int j = 0; j < Game.WIDTH; j++)
+			{
+				if (game.getFigureAt(i, j) != null && game.getFigureAt(i, j).getName().equals("king"))
+				{
+					if (game.getFigureAt(i, j).getOwner() == 0)
+					{
+						game.setWhiteKingId(game.getFigureAt(i, j).getId());
+					} else
+					{
+						game.setBlackKingId(game.getFigureAt(i, j).getId());
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * It checks if the king of the current player is in check
+	 *
+	 * @param game the game object
+	 * @return A boolean value.
+	 */
+	public Boolean checkEchec(Game game)
+	{
+		if (game.getFigureById(game.getWhiteKingId()) != null && game.getFigureById(game.getBlackKingId()) != null)
+		{
+			int xKing, yKing;
+			int player = game.getCurrentPlayer();
+			boolean response = false;
+			if (player == 0)
+			{
+				xKing = game.getFigureById(game.getWhiteKingId()).getX();
+				yKing = game.getFigureById(game.getWhiteKingId()).getY();
+			} else
+			{
+				xKing = game.getFigureById(game.getBlackKingId()).getX();
+				yKing = game.getFigureById(game.getBlackKingId()).getY();
+			}
+			for (int i = 0; i < Game.WIDTH; i++)
+			{
+				for (int j = 0; j < Game.WIDTH; j++)
+				{
+					if (game.getFigureAt(i, j) != null && game.getFigureAt(i, j).getOwner() != player)
+					{
+						if (response)
+						{
+							System.out.println("checkEchec true");
+							return true;
+						} else
+							response = checkAny(game, game.getFigureAt(i, j), xKing, yKing);
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * It checks if the current player is in checkmate
+	 *
+	 * @param game The game object
+	 * @return A boolean value.
+	 */
+	public Boolean checkMate(Game game)
+	{
+		if (game.getFigureById(game.getWhiteKingId()) != null && game.getFigureById(game.getBlackKingId()) != null)
+		{
+			int xKing, yKing;
+			int player = game.getCurrentPlayer();
+			boolean response = false;
+			if (player == 1)
+			{
+				xKing = game.getFigureById(game.getWhiteKingId()).getX();
+				yKing = game.getFigureById(game.getWhiteKingId()).getY();
+			} else
+			{
+				xKing = game.getFigureById(game.getBlackKingId()).getX();
+				yKing = game.getFigureById(game.getBlackKingId()).getY();
+			}
+			for (int i = 0; i < Game.WIDTH; i++)
+			{
+				for (int j = 0; j < Game.WIDTH; j++)
+				{
+					if (game.getFigureAt(i, j) != null && game.getFigureAt(i, j).getOwner() == player)
+					{
+						if (response)
+						{
+							return true;
+						} else
+							response = checkAny(game, game.getFigureAt(i, j), xKing, yKing);
+					}
+				}
+			}
+		} else
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Compute the elapsed time in seconds between the current time and the time in database.
+	 * @param time value of the time in millisecond
+	 * @return time elapsed in seconds
+	 */
+	public Long getTimeElapsed(final Long time)
+	{
+		if (time == null)
+		{
+			return 0L;
+		}
+
+		return (System.currentTimeMillis() - time) / S_CONVERT;
+	}
 }
