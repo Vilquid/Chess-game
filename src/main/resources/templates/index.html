@@ -4,7 +4,7 @@
     <title th:fragment="title">Chess v1.0</title>
 </head>
 <body>
-<!--/* Main page (index) */-->
+<!-- Main page (index) -->
 <div th:fragment="content">
     <h1 class="text-center m-3">My Profile</h1>
     <div sec:authorize="isAuthenticated()" class="container-fluid">
@@ -27,6 +27,8 @@
                 <th class="col">Join</th>
             </tr>
             </thead>
+            <!-- A loop that iterate over the list of games and display the game id, the white player and the black
+            player. -->
             <tbody>
                 <tr th:each="game: ${games}" th:if="${!game.getFinish()}">
                     <td th:text="${game.getId()}" scope="row">1</td>

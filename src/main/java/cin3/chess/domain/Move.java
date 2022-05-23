@@ -33,11 +33,13 @@ public class Move
 	@ManyToOne
 	private Game game;
 
-	public Long getIdMove() {
+	public Long getIdMove()
+	{
 		return idMove;
 	}
 
-	public void setIdMove(Long idMove) {
+	public void setIdMove(Long idMove)
+	{
 		this.idMove = idMove;
 	}
 
