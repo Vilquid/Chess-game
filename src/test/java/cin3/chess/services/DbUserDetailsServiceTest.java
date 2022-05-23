@@ -1,4 +1,4 @@
-package cin3.chess;
+package cin3.chess.services;
 
 import cin3.chess.domain.User;
 import cin3.chess.form.UserForm;

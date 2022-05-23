@@ -47,11 +47,10 @@ public class GameTest {
 		assertThat(g.getGameTime()).isEqualTo(time);
 		assertThat(g.getTimeWhitePlayer()).isEqualTo(time);
 		assertThat(g.getTimeBlackPlayer()).isEqualTo(time);
-
 	}
 
 	/**
-	 * > The function `changePlayer` should change the current player to the next player
+	 * The function `changePlayer` should change the current player to the next player
 	 */
 	@Test
 	public void changePlayerTest() {

@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FriendRequestTest {
+public class FriendRequestTest
+{
 	private FriendRequest f;
 
 	@BeforeEach
@@ -17,7 +18,8 @@ public class FriendRequestTest {
 	 * It tests that the getters of the FriendRequest class return the values that were set by the setters
 	 */
 	@Test
-	public void gettersTest() {
+	public void gettersTest()
+	{
 		User u = new User();
 
 		f.setId(2048L);
@@ -29,6 +31,5 @@ public class FriendRequestTest {
 		assertThat(f.getSender()).isEqualTo("Sender");
 		assertThat(f.getAccepted()).isTrue();
 		assertThat(f.getReceiver()).isEqualTo(u);
-
 	}
 }

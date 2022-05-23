@@ -1,15 +1,14 @@
-package cin3.chess;
+package cin3.chess.services;
 
 import cin3.chess.domain.Figure;
 import cin3.chess.domain.FigureName;
 import cin3.chess.domain.Game;
-import cin3.chess.services.ChessGameService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ChessGameServiceTest
+public class ChessGameTest
 {
 	private ChessGameService service;
 

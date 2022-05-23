@@ -5,19 +5,22 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FigureTest {
+public class FigureTest
+{
 	private Figure fig;
 
 	@BeforeEach
-	public void before() {
+	public void before()
+	{
 		fig = new Figure();
 	}
 
 	/**
-	 * > The function `setCodeTest()` tests the `setCode()` function
+	 * The function `setCodeTest()` tests the `setCode()` function
 	 */
 	@Test
-	public void setCodeTest() {
+	public void setCodeTest()
+	{
 		fig.setCode(-1);
 		assertThat(fig.getCode()).isNull();
 
@@ -38,10 +41,11 @@ public class FigureTest {
 	}
 
 	/**
-	 * > The function `setNameTest` tests the `setName` function
+	 * The function `setNameTest` tests the `setName` function
 	 */
 	@Test
-	public void setNameTest() {
+	public void setNameTest()
+	{
 		fig.setName("dddd");
 		assertThat(fig.getName()).isNull();
 
@@ -51,10 +55,11 @@ public class FigureTest {
 
 
 	/**
-	 * > This function tests the getCountPlayed() function in the Figurine class
+	 * This function tests the getCountPlayed() function in the Figurine class
 	 */
 	@Test
-	public void getCountPlayedTest() {
+	public void getCountPlayedTest()
+	{
 		assertThat(fig.getCountPlayed()).isEqualTo(0);
 	}
 
@@ -62,7 +67,8 @@ public class FigureTest {
 	 * It tests that the getters and setters work
 	 */
 	@Test
-	public void gettersTest() {
+	public void gettersTest()
+	{
 		Game g = new Game();
 
 		fig.setOwner(0);
@@ -82,7 +88,8 @@ public class FigureTest {
 	 * The function `getMoveCode()` returns a string that represents the move code of the figure
 	 */
 	@Test
-	public void getMoveCodeTest() {
+	public void getMoveCodeTest()
+	{
 		fig.setName("king");
 		fig.setCode(FigureName.stringToFigureName("king").ordinal());
 		fig.setX(1);
@@ -92,10 +99,11 @@ public class FigureTest {
 	}
 
 	/**
-	 * > The function `updateCountPlayed()` should increment the countPlayed variable by 1
+	 * The function `updateCountPlayed()` should increment the countPlayed variable by 1
 	 */
 	@Test
-	public void updateCountPlayed() {
+	public void updateCountPlayed()
+	{
 		fig.updateCountPlayed();
 		assertThat(fig.getCountPlayed()).isEqualTo(1);
 	}
@@ -104,7 +112,8 @@ public class FigureTest {
 	 * It tests if the html code of a figure is correct
 	 */
 	@Test
-	public void getHtmlCodeTest() {
+	public void getHtmlCodeTest()
+	{
 		fig.setCode(FigureName.stringToFigureName("king").ordinal());
 		fig.setOwner(PlayerName.WHITE.ordinal());
 		assertThat(fig.getHtmlCode()).isEqualTo("&#9812;");

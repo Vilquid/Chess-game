@@ -31,7 +31,8 @@ public class FriendRequest
 		return idFriendRequest;
 	}
 
-	public void setIdFriendRequest(Long idFriendRequest) {
+	public void setIdFriendRequest(Long idFriendRequest)
+	{
 		this.idFriendRequest = idFriendRequest;
 	}
 

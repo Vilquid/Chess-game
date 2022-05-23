@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AuthorityTest {
+public class AuthorityTest
+{
 	private Authority auth;
 
 	@BeforeEach
@@ -17,8 +18,8 @@ public class AuthorityTest {
 	 * This function tests the getters and setters of the Authority class
 	 */
 	@Test
-	public void gettersTest() {
-
+	public void gettersTest()
+	{
 		auth.setId(2048L);
 		auth.setAuthority("username");
 
