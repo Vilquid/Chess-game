@@ -21,11 +21,13 @@ public class Authority implements GrantedAuthority
 
 	private String authority;
 
-	public Long getIdAuthority() {
+	public Long getIdAuthority()
+	{
 		return idAuthority;
 	}
 
-	public void setIdAuthority(Long idAuthority) {
+	public void setIdAuthority(Long idAuthority)
+	{
 		this.idAuthority = idAuthority;
 	}
 

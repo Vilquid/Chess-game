@@ -28,9 +28,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 	private PasswordEncoder passwordEncoder;
 
 	/**
-	 * @brief This method is called when the application context is refreshed.
-	 * @param contextRefreshedEvent
-	 * @return void
+	 * If the application is starting up for the first time, create the admin role and a user with that role
+	 *
+	 * @param contextRefreshedEvent This is the event that is fired when the application context is initialized or refreshed.
 	 */
 	@Override
 	@Transactional // j'ai chopé le @Transactional de gradle
@@ -56,6 +56,11 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 		alreadySetup = true;
 	}
 
+	/**
+	 * If a role with the given name doesn't exist, create it
+	 *
+	 * @param name The name of the role.
+	 */
 	@Transactional
 	void createRoleIfNotFound(String name)
 	{

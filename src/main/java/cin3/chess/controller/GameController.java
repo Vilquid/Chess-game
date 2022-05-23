@@ -163,7 +163,6 @@ public class GameController
 		return INDEX_REDIRECTION;
 	}
 
-
 	/**
 	 * It returns the game-promote.html page, which is the page that allows the user to choose which piece to promote to
 	 *
@@ -233,10 +232,8 @@ public class GameController
 		return "game-promote";
 	}
 
-
 	/**
-	 * It takes the gameId, the winner and the looser as parameters, and then it sets the game as finished, and sets the
-	 * winner
+	 * It takes the gameId, the winner and the looser as parameters, and then it sets the game as finished, and sets the winner
 	 * @param gameId the id of the game
 	 * @param winner the username of the winner
 	 * @param looser the player who lost the game
@@ -331,7 +328,6 @@ public class GameController
 		}
 		return INDEX_REDIRECTION;
 	}
-
 
 	/**
 	 * It moves a pawn on the board

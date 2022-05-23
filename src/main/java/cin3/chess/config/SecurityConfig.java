@@ -25,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	private DbUserDetailsService userDetailsService;
 
 	/**
-	 * "If the user is not authenticated, then redirect to the login page. Otherwise, allow access to the requested resource."
+	 * If the user is not authenticated, then redirect to the login page. Otherwise, allow access to the requested resource;
 	 *
 	 * The first line of the function is a call to the authorizeRequests() method. This method is used to configure the
 	 * authorization rules for the application
@@ -65,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	}
 
 	/**
-	 * > This function creates a new DaoAuthenticationProvider object, sets the userDetailsService to the userDetailsService
+	 * This function creates a new DaoAuthenticationProvider object, sets the userDetailsService to the userDetailsService
 	 * object we created earlier, and sets the passwordEncoder to the encoder() function we created earlier
 	 *
 	 * @return A DaoAuthenticationProvider object.
@@ -81,9 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	}
 
 	/**
-	 * @fn encoder
-	 * @brief Create the password encoder
-	 * @return the {@link PasswordEncoder}
+	 * It creates a password encoder that uses the BCrypt algorithm.
+	 *
+	 * @return A PasswordEncoder object.
 	 */
 	@Bean
 	public PasswordEncoder encoder()
